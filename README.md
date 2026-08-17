@@ -293,22 +293,3 @@ To *see* load balancing happen: scale the backend up and repeatedly hit `/api/it
 while tailing logs from all pods — requests visibly alternate between replicas. To see
 cache invalidation happen: `curl` an item, `PATCH` it, then `curl` it again — the
 response reflects the update immediately instead of the stale cached value.
-
-## Roadmap
-
-The base system (CRUD + Docker + horizontal replicas + Ingress load balancer + Redis
-cache-aside with invalidation) is done. Natural next steps, roughly ordered by how much
-new ground each one covers:
-
-- [x] **Redis cache-aside + invalidation** in front of the backend's reads
-- [ ] **HPA** (Horizontal Pod Autoscaler) — scale the backend automatically on CPU,
-      via `metrics-server`
-- [ ] **Prometheus + Grafana** — observability to actually justify scaling/caching
-      decisions with data instead of guesswork
-- [ ] **ConfigMap** to separate non-sensitive config from the Deployment specs
-- [ ] **CI/CD** — GitHub Actions building images and applying manifests on push
-- [ ] **StatefulSet** for Postgres instead of Deployment+PVC, to understand *why*
-      databases usually need one
-- [ ] **Blue/green or canary deploys** for the backend using two Deployments and
-      weighted Ingress routing
-- [ ] **NetworkPolicy** restricting Postgres access to the backend only
