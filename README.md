@@ -33,7 +33,6 @@ cache invalidation, and container orchestration with Kubernetes.**
   - [2. Build Docker images](#2-build-docker-images)
   - [3. Deploy to Kubernetes](#3-deploy-to-kubernetes)
 - [Observing the system under load](#observing-the-system-under-load)
-- [Roadmap](#roadmap)
 
 ---
 
