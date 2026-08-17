@@ -9,26 +9,12 @@ stringData:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: crud-app
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
   namespace: crud-app
 spec:
-  # Una sola réplica: Postgres con un PVC ReadWriteOnce no soporta escalar
-  # horizontalmente sin un operador o setup de replicación aparte.
   replicas: 1
   selector:
     matchLabels:
@@ -46,24 +32,6 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-secret
-          volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql/data
-              subPath: postgres
-          readinessProbe:
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
-            initialDelaySeconds: 15
-            periodSeconds: 10
-      volumes:
-        - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: Service
